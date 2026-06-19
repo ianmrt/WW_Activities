@@ -15,9 +15,26 @@ def load_data():
     # Filter to 2024 onwards
     # --------------------------------------------------
 
+    # --------------------------------------------------
+# Event Date
+# --------------------------------------------------
+
+try:
+    df["Event Date"] = pd.to_datetime(
+        df["Date of Event (start date)"],
+        errors="coerce"
+    )
+except Exception:
+    df["Event Date"] = pd.NaT
+
+# --------------------------------------------------
+# Filter to 2024 onwards
+# --------------------------------------------------
+
+if "Event Date" in df.columns:
     df = df[
-        (df["Event Date"].isna()) |
-        (df["Event Date"] >= pd.Timestamp("2024-01-01"))
+        df["Event Date"].notna()
+        & (df["Event Date"] >= pd.Timestamp("2024-01-01"))
     ]
 
     df = pd.read_excel("data.xlsx")
