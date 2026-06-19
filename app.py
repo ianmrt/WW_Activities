@@ -129,8 +129,6 @@ return df
 
 df = load_data()
 
-df = load_data()
-
 st.title("Adventurous Activities Approval Dashboard")
 
 # ======================================================
