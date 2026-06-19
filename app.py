@@ -103,8 +103,6 @@ def load_data():
         )
     except Exception:
         df["Event Date"] = pd.NaT
-        
-    return df
 
     try:
         df["Event Date"] = pd.to_datetime(
@@ -117,6 +115,8 @@ def load_data():
     except Exception:
         df["Event Date"] = pd.NaT
         df["Year"] = None
+
+    return df
 
 # ======================================================
 # Load Data
