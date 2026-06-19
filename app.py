@@ -11,6 +11,14 @@ st.set_page_config(
 
 @st.cache_data(ttl=300)
 def load_data():
+    # --------------------------------------------------
+    # Filter to 2024 onwards
+    # --------------------------------------------------
+
+    df = df[
+        (df["Event Date"].isna()) |
+        (df["Event Date"] >= pd.Timestamp("2024-01-01"))
+    ]
 
     df = pd.read_excel("data.xlsx")
 
@@ -182,17 +190,24 @@ with left:
         filtered.groupby("Group")
         .size()
         .reset_index(name="Count")
-        .sort_values("Count", ascending=False)
+        .sort_values("Count", ascending=True)
     )
 
     st.subheader("Activities by Group")
 
+    fig = px.bar(
+        grp,
+        x="Count",
+        y="Group",
+        orientation="h"
+    )
+
+    fig.update_layout(
+        height=max(500, len(grp) * 25)
+    )
+
     st.plotly_chart(
-        px.bar(
-            grp,
-            x="Group",
-            y="Count"
-        ),
+        fig,
         use_container_width=True
     )
 
