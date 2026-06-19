@@ -11,10 +11,7 @@ st.set_page_config(
 
 @st.cache_data(ttl=300)
 def load_data():
-@st.cache_data(ttl=300)
-def load_data():
 
-```
 # --------------------------------------------------
 # Read Excel
 # --------------------------------------------------
