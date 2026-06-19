@@ -91,7 +91,18 @@ if filtered["Event Date"].notna().any():
     )
 
 st.subheader("Activity Records")
-st.dataframe(filtered, use_container_width=True)
+table_df = filtered[
+    ["Group", "Activity", "Event Date", "Approval Status"]
+].rename(
+    columns={
+        "Group": "Scout Group",
+        "Activity": "Activity Type",
+        "Event Date": "Activity Date",
+        "Approval Status": "Status"
+    }
+)
+
+st.dataframe(table_df, use_container_width=True)
 
 st.download_button(
     "Download Filtered Data",
