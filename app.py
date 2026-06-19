@@ -12,15 +12,15 @@ st.set_page_config(
 @st.cache_data(ttl=300)
 def load_data():
 
-# --------------------------------------------------
-# Read Excel
-# --------------------------------------------------
+    # --------------------------------------------------
+    # Read Excel
+    # --------------------------------------------------
 
     df = pd.read_excel("data.xlsx")
 
-# --------------------------------------------------
-# Normalise Activity Names
-# --------------------------------------------------
+    # --------------------------------------------------
+    # Normalise Activity Names
+    # --------------------------------------------------
 
     df["Activity"] = (
         df["Activity"]
@@ -32,96 +32,94 @@ def load_data():
         .str.title()
     )
 
-# --------------------------------------------------
-# Normalise Group Names
-# --------------------------------------------------
+    # --------------------------------------------------
+    # Normalise Group Names
+    # --------------------------------------------------
 
-def normalise_group(group):
+    def normalise_group(group):
 
-    if pd.isna(group):
-        return "Unknown"
+        if pd.isna(group):
+            return "Unknown"
 
-    group = str(group)
+        group = str(group)
 
-    # Replace semicolons with spaces
-    group = group.replace(";", " ")
+        # Replace semicolons with spaces
+        group = group.replace(";", " ")
 
-    # Remove duplicate spaces
-    group = re.sub(r"\s+", " ", group).strip()
+        # Remove duplicate spaces
+        group = re.sub(r"\s+", " ", group).strip()
 
-    words = []
+        words = []
 
-    for word in group.split():
+        for word in group.split():
 
-        match = re.match(
-            r"^(\d+)(st|nd|rd|th)$",
-            word.lower()
-        )
-
-        if match:
-            words.append(
-                match.group(1) + match.group(2)
+            match = re.match(
+                r"^(\d+)(st|nd|rd|th)$",
+                word.lower()
             )
-        else:
-            words.append(word.capitalize())
 
-    return " ".join(words)
+            if match:
+                words.append(
+                    match.group(1) + match.group(2)
+                )
+            else:
+                words.append(word.capitalize())
 
-df["Group"] = df["Group"].apply(normalise_group)
+        return " ".join(words)
 
-# --------------------------------------------------
-# Approval Status
-# --------------------------------------------------
+    df["Group"] = df["Group"].apply(normalise_group)
 
-def approval_status(value):
+    # --------------------------------------------------
+    # Approval Status
+    # --------------------------------------------------
 
-    if pd.isna(value) or str(value).strip() == "":
-        return "Awaiting Approval"
+    def approval_status(value):
 
-    value = str(value).strip().lower()
+        if pd.isna(value) or str(value).strip() == "":
+            return "Awaiting Approval"
 
-    if value in ["yes", "approved", "y"]:
-        return "Approved"
+        value = str(value).strip().lower()
 
-    if value in ["no", "rejected", "n"]:
-        return "Not Approved"
+        if value in ["yes", "approved", "y"]:
+            return "Approved"
 
-    return str(value)
+        if value in ["no", "rejected", "n"]:
+            return "Not Approved"
 
-df["Approval Status"] = df["Approved "].apply(
-    approval_status
-)
+        return str(value)
 
-# --------------------------------------------------
-# Event Date
-# --------------------------------------------------
-
-try:
-    df["Event Date"] = pd.to_datetime(
-        df["Date of Event (start date)"],
-        errors="coerce"
+    df["Approval Status"] = df["Approved "].apply(
+        approval_status
     )
-except Exception:
-    df["Event Date"] = pd.NaT
 
-# --------------------------------------------------
-# Filter to 2024 onwards
-# --------------------------------------------------
+    # --------------------------------------------------
+    # Event Date
+    # --------------------------------------------------
 
-if "Event Date" in df.columns:
+    try:
+        df["Event Date"] = pd.to_datetime(
+            df["Date of Event (start date)"],
+            errors="coerce"
+        )
+    except Exception:
+        df["Event Date"] = pd.NaT
 
-    df = df[
-        df["Event Date"].notna()
-        & (df["Event Date"] >= pd.Timestamp("2024-01-01"))
-    ]
+    # --------------------------------------------------
+    # Filter to 2024 onwards
+    # --------------------------------------------------
 
-return df
+    if "Event Date" in df.columns:
+
+        df = df[
+            (df["Event Date"].notna())
+            & (df["Event Date"] >= pd.Timestamp("2024-01-01"))
+        ]
+
+    return df
 
 
 # ======================================================
-
 # Load Data
-
 # ======================================================
 
 df = load_data()
