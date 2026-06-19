@@ -12,29 +12,29 @@ st.set_page_config(
 @st.cache_data(ttl=300)
 def load_data():
 
-# --------------------------------------------------
-# Read Excel
-# --------------------------------------------------
+    # --------------------------------------------------
+    # Read Excel
+    # --------------------------------------------------
+    
+    df = pd.read_excel("data.xlsx")
+    
+    # --------------------------------------------------
+    # Normalise Activity Names
+    # --------------------------------------------------
 
-df = pd.read_excel("data.xlsx")
+    df["Activity"] = (
+        df["Activity"]
+        .fillna("")
+        .astype(str)
+        .str.replace(";", "", regex=False)
+        .str.replace(r"\s+", " ", regex=True)
+        .str.strip()
+        .str.title()
+    )
 
-# --------------------------------------------------
-# Normalise Activity Names
-# --------------------------------------------------
-
-df["Activity"] = (
-    df["Activity"]
-    .fillna("")
-    .astype(str)
-    .str.replace(";", "", regex=False)
-    .str.replace(r"\s+", " ", regex=True)
-    .str.strip()
-    .str.title()
-)
-
-# --------------------------------------------------
-# Normalise Group Names
-# --------------------------------------------------
+    # --------------------------------------------------
+    # Normalise Group Names
+    # --------------------------------------------------
 
 def normalise_group(group):
 
