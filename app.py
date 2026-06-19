@@ -2,6 +2,7 @@
 import pandas as pd
 import streamlit as st
 import plotly.express as px
+import re as re
 
 st.set_page_config(page_title="Adventurous Activities Dashboard", layout="wide")
 
@@ -18,15 +19,31 @@ def load_data():
        .str.strip()
        .str.title()
     )
-    df["Group"] = (
-       df["Group"]
-       .fillna("Unknown")
-       .astype(str)
-       .str.replace(";", "", regex=False)
-       .str.replace(r"\s+", " ", regex=True)
-       .str.strip()
-       .str.title()
-    )
+    
+
+    def normalise_group(group):
+       if pd.isna(group):
+           return "Unknown"
+
+    group = str(group)
+
+    # Replace semicolons with spaces
+    group = group.replace(";", " ")
+
+    # Remove duplicate spaces
+    group = re.sub(r"\s+", " ", group).strip()
+
+    # Capitalise words but preserve numeric suffixes
+    words = []
+    for word in group.split():
+        if re.match(r"^\d+(st|nd|rd|th)$", word.lower()):
+            words.append(word.lower())
+        else:
+            words.append(word.capitalize())
+
+    return " ".join(words)
+
+    df["Group"] = df["Group"].apply(normalise_group)
 
     def approval_status(v):
         if pd.isna(v) or str(v).strip() == "":
