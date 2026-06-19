@@ -103,20 +103,20 @@ def load_data():
         )
     except Exception:
         df["Event Date"] = pd.NaT
-
-    # --------------------------------------------------
-    # Filter to 2024 onwards
-    # --------------------------------------------------
-
-    if "Event Date" in df.columns:
-
-        df = df[
-            (df["Event Date"].notna())
-            & (df["Event Date"] >= pd.Timestamp("2024-01-01"))
-        ]
-
+        
     return df
 
+    try:
+        df["Event Date"] = pd.to_datetime(
+        df["Date of Event (start date)"],
+        errors="coerce"
+        )
+
+    df["Year"] = df["Event Date"].dt.year
+
+    except Exception:
+        df["Event Date"] = pd.NaT
+        df["Year"] = None
 
 # ======================================================
 # Load Data
@@ -133,7 +133,29 @@ st.title("Adventurous Activities Approval Dashboard")
 groups = sorted(df["Group"].dropna().unique())
 activities = sorted(df["Activity"].dropna().unique())
 
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
+
+current_year = pd.Timestamp.now().year
+
+available_years = sorted(
+    [
+        int(y)
+        for y in df["Year"].dropna().unique()
+    ],
+    reverse=True
+)
+
+default_year = (
+    current_year
+    if current_year in available_years
+    else available_years[0]
+)
+
+selected_year = col1.selectbox(
+    "Year",
+    available_years,
+    index=available_years.index(default_year)
+)
 
 selected_groups = col1.multiselect(
     "Group",
