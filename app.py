@@ -16,21 +16,21 @@ def load_data():
 # Read Excel
 # --------------------------------------------------
 
-df = pd.read_excel("data.xlsx")
+    df = pd.read_excel("data.xlsx")
 
 # --------------------------------------------------
 # Normalise Activity Names
 # --------------------------------------------------
 
-df["Activity"] = (
-    df["Activity"]
-    .fillna("")
-    .astype(str)
-    .str.replace(";", "", regex=False)
-    .str.replace(r"\s+", " ", regex=True)
-    .str.strip()
-    .str.title()
-)
+    df["Activity"] = (
+        df["Activity"]
+        .fillna("")
+        .astype(str)
+        .str.replace(";", "", regex=False)
+        .str.replace(r"\s+", " ", regex=True)
+        .str.strip()
+        .str.title()
+    )
 
 # --------------------------------------------------
 # Normalise Group Names
