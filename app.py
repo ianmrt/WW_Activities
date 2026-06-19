@@ -112,7 +112,7 @@ def load_data():
         errors="coerce"
         )
 
-    df["Year"] = df["Event Date"].dt.year
+        df["Year"] = df["Event Date"].dt.year
 
     except Exception:
         df["Event Date"] = pd.NaT
