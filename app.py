@@ -286,38 +286,38 @@ st.plotly_chart(
 # Activities Over Time
 # ======================================================
 
-if (
-    "Event Date" in filtered.columns
-    and filtered["Event Date"].notna().any()
-):
-
-    trend_df = filtered.dropna(
-        subset=["Event Date"]
-    ).copy()
-
-    trend_df["Month"] = (
-        trend_df["Event Date"]
-        .dt.to_period("M")
-        .dt.to_timestamp()
-    )
-
-    trend = (
-        trend_df.groupby("Month")
-        .size()
-        .reset_index(name="Count")
-    )
-
-    st.subheader("Activities Over Time")
-
-    st.plotly_chart(
-        px.line(
-            trend,
-            x="Month",
-            y="Count",
-            markers=True
-        ),
-        use_container_width=True
-    )
+#if (
+#    "Event Date" in filtered.columns
+#    and filtered["Event Date"].notna().any()
+#):#
+#
+#    trend_df = filtered.dropna(
+#        subset=["Event Date"]
+#    ).copy()#
+#
+#    trend_df["Month"] = (
+#        trend_df["Event Date"]
+#        .dt.to_period("M")
+#        .dt.to_timestamp()
+#    )
+#
+#    trend = (
+#        trend_df.groupby("Month")
+#        .size()
+#        .reset_index(name="Count")
+#    )
+#
+#    st.subheader("Activities Over Time")
+#
+#    st.plotly_chart(
+#        px.line(
+#            trend,
+#            x="Month",
+#            y="Count",
+#            markers=True
+#        ),
+#        use_container_width=True
+#    )
 
 # ======================================================
 # Activity Records Table
