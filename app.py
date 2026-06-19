@@ -9,8 +9,24 @@ st.set_page_config(page_title="Adventurous Activities Dashboard", layout="wide")
 def load_data():
     df = pd.read_excel("data.xlsx")
 
-    df["Activity"] = df["Activity"].fillna("").astype(str).str.strip().str.title()
-    df["Group"] = df["Group"].fillna("Unknown")
+    df["Activity"] = (
+       df["Activity"]
+       .fillna("")
+       .astype(str)
+       .str.replace(";", "", regex=False)
+       .str.replace(r"\s+", " ", regex=True)
+       .str.strip()
+       .str.title()
+    )
+    df["Group"] = (
+       df["Group"]
+       .fillna("Unknown")
+       .astype(str)
+       .str.replace(";", "", regex=False)
+       .str.replace(r"\s+", " ", regex=True)
+       .str.strip()
+       .str.title()
+    )
 
     def approval_status(v):
         if pd.isna(v) or str(v).strip() == "":
