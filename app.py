@@ -80,9 +80,15 @@ st.subheader("Approval Status")
 st.plotly_chart(px.pie(status, names="Approval Status", values="Count", hole=0.5), use_container_width=True)
 
 if filtered["Event Date"].notna().any():
-    trend = filtered.dropna(subset=["Event Date"]).groupby(pd.Grouper(key="Event Date", freq="M")).size().reset_index(name="Count")
-    st.subheader("Activities Over Time")
-    st.plotly_chart(px.line(trend, x="Event Date", y="Count"), use_container_width=True)
+    trend_df = filtered.dropna(subset=["Event Date"]).copy()
+
+    trend_df["Month"] = trend_df["Event Date"].dt.to_period("M").dt.to_timestamp()
+
+    trend = (
+       trend_df.groupby("Month")
+       .size()
+       .reset_index(name="Count")
+    )
 
 st.subheader("Activity Records")
 st.dataframe(filtered, use_container_width=True)
